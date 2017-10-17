@@ -1,10 +1,11 @@
 import time
+import platform
 import getpass
 import selenium
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.phantomjs.webdriver import WebDriver
 
 
 def get_title(driver):
@@ -13,8 +14,11 @@ def get_title(driver):
     print(soup.title.string+"\n")
     return soup.title.string
 
-binary = FirefoxBinary('C:\Program Files (x86)\Mozilla Firefox\Firefox.exe')
-driver = webdriver.Firefox(firefox_binary=binary)
+if platform.system() == 'Windows':
+    pathr = 'C:\\Program Files\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe'
+else:
+    pathr = './phantomjs'
+driver = webdriver.PhantomJS(pathr, service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
 url = "https://facebook.com"
 
 while True:
@@ -30,9 +34,10 @@ while True:
     password = driver.find_element_by_name("pass")
     password.send_keys(pAss)
 
-    login = driver.find_element_by_css_selector("#u_0_l")
+    login = driver.find_element_by_css_selector("#u_0_2")
     login.click()
     time.sleep(5)
+    
 
     if get_title(driver) != "Log in to Facebook | Facebook":
         print("You are logged in now\n")
